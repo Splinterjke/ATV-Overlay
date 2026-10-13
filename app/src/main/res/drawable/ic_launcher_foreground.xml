@@ -3,16 +3,49 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path
-        android:pathData="M30,34 H78 V74 H30 Z"
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="3"
-        android:fillColor="#00000000" />
-    <path
-        android:pathData="M30,43 H78"
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="2" />
-    <path
-        android:pathData="M47,51 L64,60 L47,69 Z"
-        android:fillColor="#FFFFFF" />
+    <!-- artwork bbox mapped into the 72dp safe zone -->
+    <group
+        android:translateX="21.1"
+        android:translateY="21.1"
+        android:scaleX="0.61"
+        android:scaleY="0.61">
+        <!-- TV frame -->
+        <path
+            android:pathData="M15.6,21.2 H88.1 A4.8,4.8 0 0 1 92.9,26 V67.3 A4.8,4.8 0 0 1 88.1,72.1 H15.6 A4.8,4.8 0 0 1 10.8,67.3 V26 A4.8,4.8 0 0 1 15.6,21.2 Z"
+            android:strokeColor="#F98B2E"
+            android:strokeWidth="2.9"
+            android:fillColor="#00000000" />
+        <!-- stand -->
+        <path
+            android:pathData="M38.6,72.1 V74.8"
+            android:strokeColor="#F98B2E"
+            android:strokeWidth="5.8" />
+        <path
+            android:pathData="M32.9,77 H52.5"
+            android:strokeColor="#F98B2E"
+            android:strokeWidth="4.4" />
+        <!-- notification card -->
+        <path
+            android:pathData="M56.9,60.8 H89.9 A2.4,2.4 0 0 1 92.3,63.2 V84.6 A2.4,2.4 0 0 1 89.9,87 H56.9 A2.4,2.4 0 0 1 54.5,84.6 V63.2 A2.4,2.4 0 0 1 56.9,60.8 Z"
+            android:strokeColor="#F98B2E"
+            android:strokeWidth="1.9"
+            android:fillColor="#253138" />
+        <!-- hex-color text lines -->
+        <path
+            android:pathData="M60.3,65.3 H86"
+            android:strokeColor="#F3E44B"
+            android:strokeWidth="4.4" />
+        <path
+            android:pathData="M60.3,72.1 H86"
+            android:strokeColor="#7BD88F"
+            android:strokeWidth="4.4" />
+        <path
+            android:pathData="M60.3,78.9 H86"
+            android:strokeColor="#5AD4E6"
+            android:strokeWidth="4.4" />
+        <!-- badge -->
+        <path
+            android:pathData="M91.1,51.6 A6.1,6.1 0 1 0 91.1,63.8 A6.1,6.1 0 1 0 91.1,51.6 Z"
+            android:fillColor="#E50AA1" />
+    </group>
 </vector>
