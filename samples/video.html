@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- HTML5 video in an overlay. Try (video is public-domain Big Buck Bunny):
+     curl -X POST --data-binary @samples/video.html "http://TV_IP:8080/overlay?id=ad&x=58%25&y=66%25&w=40%25&h=30%25&duration=60"
+     Autoplay without a gesture is enabled, so dropping `muted` gives you audio
+     over whatever the TV is playing. -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { background: transparent; margin: 0; height: 100%; overflow: hidden; }
+  .frame {
+    position: absolute; left: 2%; top: 2%; width: 96%; height: 96%;
+    border-radius: 14px; overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  }
+  video { width: 100%; height: 100%; object-fit: cover; background: #000; }
+  .caption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 6px 10px; font: 600 2.8vmin sans-serif; color: #fff;
+    background: linear-gradient(transparent, rgba(0,0,0,.8));
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <video autoplay muted loop playsinline
+           src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4#t=120">
+    </video>
+    <div class="caption">🐰&nbsp;overlay video — sent as plain HTML over HTTP</div>
+  </div>
+</body>
+</html>

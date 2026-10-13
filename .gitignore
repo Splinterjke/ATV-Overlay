@@ -1,0 +1,13 @@
+# Built with Gradle
+.gradle/
+build/
+.kotlin/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+captures/
+local.properties
+
+# Misc
+.DS_Store
