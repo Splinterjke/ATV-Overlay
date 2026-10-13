@@ -239,26 +239,182 @@ UTF-8 テキストに percent エンコード不要、`template=video` はオー
 go2rtc がシグナリング (`api/ws`、`base=` 経由) もストリームも配信します:
 
 ```yaml
-# configuration.yaml
+# configuration.yaml (rest_command.reload アクションで再起動なく反映)
 rest_command:
-  tv_doorbell:
-    url: "http://TV_IP:8080/notify"
-    method: POST
-    headers: { Content-Type: "application/json" }
-    body: >-
-      {"title":"Doorbell","template":"video","src":"cam720",
-       "base":"http://GO2RTC_HOST:1984/","duration":20}
+  tv_notify_text:
+    url: "http://{ATV_OVERLAY_SERVER_IP}:8080/notify"
+    method: post
+    content_type: "application/json; charset=utf-8"
+    payload: >-
+      {"id":"notification",
+       "title":{{ title | default('TV', true) | tojson }},
+       "message":{{ message | default('', true) | tojson }},
+       "duration":{{ duration | default(5, true) }},
+       "position":{{ position | default('top-right', true) | tojson }}
+      {%- if width is defined and width %},"width":{{ width }}{% endif -%}
+      {%- if height is defined and height %},"height":{{ height }}{% endif %}}
+
+  tv_notify_video:
+    url: "http://{ATV_OVERLAY_SERVER_IP}:8080/notify"
+    method: post
+    content_type: "application/json; charset=utf-8"
+    payload: >-
+      {"id":"notification",
+       "template":"{{ kind | default('video', true) }}",
+       "duration":{{ duration | default(20, true) }}{% if muted is defined and muted != ""
+       %},"muted":{{ muted | bool | tojson }}{% endif %}
+      {%- if title is defined and title %},"title":{{ title | tojson }}{% endif -%}
+      {%- if src is defined and src %},"src":{{ src | tojson }}{% endif -%}
+      {%- if url is defined and url %},"url":{{ url | tojson }}{% endif -%}
+      {%- if base is defined and base %},"base":{{ base | tojson }}{% endif -%}
+      {%- if loading is defined and loading %},"loading":{{ loading | tojson }}{% endif -%}
+      {%- if width is defined and width %},"width":{{ width }}{% endif -%}
+      {%- if height is defined and height %},"height":{{ height }}{% endif %}}
+
+  tv_notify_dismiss:
+    url: "http://{ATV_OVERLAY_SERVER_IP}:8080/overlay?id={{ id | default('notification') }}"
+    method: delete
+```
+
+スクリプトのフィールドを空にするとパラメータ自体が省略され、アプリ側の
+デフォルトが適用されます。コマンドを `fields` 付きスクリプトでラップすると、
+オートメーションのビジュアルエディターでスクリプト呼び出し時にフォーム
+ (セレクタ・数値・ブール) が表示されます:
+
+```yaml
+# Scripts: 設定 → スクリプト → スクリプトを作成 → ⋮ → YAML で編集
+alias: Text notification on TV overlay
+mode: single
+description: Text notification on TV overlay
+sequence:
+  - action: rest_command.tv_notify_text
+    data:
+      title: '{{ title }}'
+      message: '{{ message }}'
+      duration: '{{ duration }}'
+      position: '{{ position }}'
+      width: '{{ width | default('''', true) }}'
+      height: '{{ height | default('''', true) }}'
+fields:
+  title:
+    name: Title
+    required: true
+    selector:
+      text: null
+  message:
+    name: Message
+    selector:
+      text: null
+  duration:
+    name: Duration (seconds)
+    default: 5
+    selector:
+      number:
+        min: 0
+        max: 86400
+  position:
+    name: Position
+    default: top-right
+    selector:
+      select:
+        options:
+          - top-right
+          - bottom-right
+          - bottom-left
+          - top-left
+  width:
+    name: Width (% of screen)
+    selector:
+      number:
+        min: 1
+        max: 96
+        step: 0.1
+  height:
+    name: Height (% of screen)
+    selector:
+      number:
+        min: 1
+        max: 96
+        step: 0.1
 ```
 
 ```yaml
-# automation
-- alias: ドアホンカメラを TV に表示
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.doorbell
-      to: "on"
-  action:
-    - service: rest_command.tv_doorbell
+alias: Video (go2rtc WebRTC or MP4) on TV overlay
+mode: single
+description: Video (go2rtc WebRTC or MP4) on TV overlay
+sequence:
+  - action: rest_command.tv_notify_video
+    data:
+      kind: '{{ kind | default(''video'', true) }}'
+      title: '{{ title | default('''', true) }}'
+      src: '{{ src | default('''', true) }}'
+      url: '{{ url | default('''', true) }}'
+      base: '{{ base | default('''', true) }}'
+      loading: '{{ loading | default('''', true) }}'
+      duration: '{{ duration | default(20, true) }}'
+      muted: '{{ muted | default(false, true) }}'
+      width: '{{ width | default('''', true) }}'
+      height: '{{ height | default('''', true) }}'
+fields:
+  kind:
+    name: Source type
+    default: video
+    selector:
+      select:
+        options:
+          - video
+          - mp4
+  title:
+    name: Title
+    required: false
+    selector:
+      text: null
+  src:
+    name: go2rtc stream name
+    selector:
+      text: null
+  url:
+    name: Direct MP4 URL
+    selector:
+      text: null
+  base:
+    name: go2rtc base URL
+    selector:
+      text: null
+  duration:
+    name: Duration (seconds)
+    default: 20
+    selector:
+      number:
+        min: 0
+        max: 86400
+  muted:
+    name: Muted
+    default: false
+    selector:
+      boolean: null
+  width:
+    name: Width (% of screen)
+    selector:
+      number:
+        min: 1
+        max: 96
+        step: 0.1
+  height:
+    name: Height (% of screen)
+    selector:
+      number:
+        min: 1
+        max: 96
+        step: 0.1
+  loading:
+    name: Loading indicator
+    selector:
+      select:
+        options:
+          - spinner
+          - hide
+          - native
 ```
 
 同じカメラをプログレッシブで (対応端末が広く、遅延はやや増): JSON で
