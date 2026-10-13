@@ -200,6 +200,16 @@ curl -H 'Content-Type: application/json' \
 数値/真偽値も受理 (`"duration": 10`, `"muted": true`); ネストした
 オブジェクト/配列は `400` で拒否。
 
+通知は通常の ID (デフォルト `notification`) を持つ普通のレイアウトなので、
+overlay エンドポイントで操作できます: `DELETE /overlay?id=notification`
+で即消去 (カウントダウンはキャンセルされ)、`GET /overlay?id=notification`
+は現在表示中の **レンダリング済み HTML** を返します (消滅後は `404`):
+
+```bash
+curl -X DELETE "http://TV_IP:8080/overlay?id=notification"  # stop it early
+curl         "http://TV_IP:8080/overlay?id=notification"    # inspect live HTML
+```
+
 ### 通知テンプレート
 
 デフォルトのテキストレイアウトはアプリ内にあります (`Notifications.DEFAULT_TEXT_TEMPLATE`)。

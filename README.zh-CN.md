@@ -183,6 +183,16 @@ curl -H 'Content-Type: application/json' \
 
 接受数字/布尔值（`"duration": 10`、`"muted": true`）；嵌套对象/数组会以 `400` 拒绝。
 
+通知本质上只是一个带普通 id 的图层（默认 `notification`），
+所以 overlay 端点同样适用于它：`DELETE /overlay?id=notification`
+立即将其移除（倒计时被取消），而 `GET /overlay?id=notification`
+返回当前正在显示的**渲染后 HTML**（消失后返回 `404`）：
+
+```bash
+curl -X DELETE "http://TV_IP:8080/overlay?id=notification"  # stop it early
+curl         "http://TV_IP:8080/overlay?id=notification"    # inspect live HTML
+```
+
 ### 通知模板
 
 默认文字布局内置在应用里（`Notifications.DEFAULT_TEXT_TEMPLATE`）。

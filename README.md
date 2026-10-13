@@ -202,6 +202,17 @@ curl -H 'Content-Type: application/json' \
 Numbers/booleans are accepted (`"duration": 10`, `"muted": true`); nested
 objects/arrays are rejected with `400`.
 
+A notification is an ordinary layer under a normal id (default `notification`),
+so the overlay endpoints work on it too: `DELETE /overlay?id=notification`
+dismisses it immediately (the countdown is cancelled), and
+`GET /overlay?id=notification` returns the **rendered HTML** currently shown —
+`404` once it has disappeared:
+
+```bash
+curl -X DELETE "http://TV_IP:8080/overlay?id=notification"  # stop it early
+curl         "http://TV_IP:8080/overlay?id=notification"    # inspect live HTML
+```
+
 ### Notification template
 
 The default text layout lives in the app (`Notifications.DEFAULT_TEXT_TEMPLATE`).

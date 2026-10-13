@@ -202,6 +202,17 @@ curl -H 'Content-Type: application/json' \
 Числа/булевы значения принимаются (`"duration": 10`, `"muted": true`);
 вложенные объекты/массивы отклоняются с `400`.
 
+Уведомление — обычный слой с обычным id (по умолчанию `notification`),
+поэтому к нему подходят эндпоинты оверлеев: `DELETE /overlay?id=notification`
+снимает его немедленно (отсчёт отменяется), а
+`GET /overlay?id=notification` возвращает **отрендеренный HTML** того,
+что сейчас на экране (после исчезновения — `404`):
+
+```bash
+curl -X DELETE "http://TV_IP:8080/overlay?id=notification"  # stop it early
+curl         "http://TV_IP:8080/overlay?id=notification"    # inspect live HTML
+```
+
 ### Шаблон уведомления
 
 Текстовый макет по умолчанию живёт в приложении (`Notifications.DEFAULT_TEXT_TEMPLATE`).
