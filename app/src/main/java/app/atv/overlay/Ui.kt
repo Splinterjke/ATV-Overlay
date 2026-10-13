@@ -125,17 +125,17 @@ object Ui {
     private fun buttonBackground(ctx: Context): StateListDrawable = StateListDrawable().apply {
         addState(
             intArrayOf(android.R.attr.state_pressed),
-            roundRect(ctx, BTN_PRESSED, ACCENT, 2.5f, insetDp = 3f),
+            roundRect(ctx, BTN_PRESSED, ACCENT, 2.5f, insetDp = 5f),
         )
         addState(
             intArrayOf(android.R.attr.state_focused),
-            roundRect(ctx, BTN_HOVER, ACCENT, 2.5f, insetDp = 3f),
+            roundRect(ctx, BTN_HOVER, ACCENT, 2.5f, insetDp = 5f),
         )
         addState(
             intArrayOf(-android.R.attr.state_enabled),
-            roundRect(ctx, Color.rgb(38, 38, 40), BTN_STROKE, 1f),
+            roundRect(ctx, Color.rgb(38, 38, 40), BTN_STROKE, 1f, insetDp = 5f),
         )
-        addState(intArrayOf(), roundRect(ctx, BTN, BTN_STROKE, 1f))
+        addState(intArrayOf(), roundRect(ctx, BTN, BTN_STROKE, 1f, insetDp = 5f))
     }
 
 
@@ -149,7 +149,7 @@ object Ui {
         val h = dp(ctx, 10f)
         val v = dp(ctx, 5f)
         setPadding(h, v, h, v)
-        minimumHeight = dp(ctx, 40f)
+        minHeight = dp(ctx, 36f)
         setOnClickListener { onClick() }
     }
 

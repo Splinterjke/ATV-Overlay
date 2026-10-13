@@ -144,27 +144,6 @@ class MainActivity : Activity() {
                 renderStatus()
             }
         }
-        serviceCard.addView(
-            LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                )
-                addView(port, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
-                addView(
-                    apply,
-                    LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ).apply {
-                        marginStart = Ui.dp(this@MainActivity, 8f)
-                        topMargin = Ui.dp(this@MainActivity, 3f)
-                        bottomMargin = Ui.dp(this@MainActivity, 3f)
-                    },
-                )
-            },
-        )
         val service = Ui.button(this, "Start service") {
             if (OverlayService.isRunning()) {
                 OverlayService.stop(this)
@@ -176,9 +155,26 @@ class MainActivity : Activity() {
             main.postDelayed({ renderStatus() }, 800)
         }.also { serviceButton = it }
         serviceCard.addView(
+            LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                )
+                addView(port, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                addView(
+                    apply,
+                    LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
+                        marginStart = Ui.dp(this@MainActivity, 2f)
+                    },
+                )
+            },
+        )
+        serviceCard.addView(
             Ui.row(
                 this,
-                8f,
+                2f,
                 service,
                 Ui.button(this, "Autostart") {
                     Prefs.setAutostart(this, !Prefs.autostart(this))
@@ -189,7 +185,7 @@ class MainActivity : Activity() {
         serviceCard.addView(
             Ui.row(
                 this,
-                8f,
+                2f,
                 Ui.button(this, "Overlay permission") { requestOverlayPermission() },
                 Ui.button(this, "Battery optimization") { requestBatteryOptimization() },
             ),
@@ -202,7 +198,7 @@ class MainActivity : Activity() {
         notifCard.addView(
             Ui.row(
                 this,
-                8f,
+                2f,
                 Ui.button(this, "Test notification") { testNotification() },
                 Ui.button(this, "Position") { cyclePosition() }.also { positionButton = it },
             ),
@@ -210,15 +206,14 @@ class MainActivity : Activity() {
         notifCard.addView(
             Ui.row(
                 this,
-                8f,
+                2f,
                 Ui.button(this, "Video loading: spinner") { cycleVideoLoading() }
                     .also { loadingButton = it },
             ),
         )
         notifCard.addView(
             Ui.text(this, 10f, Ui.MUTED).apply {
-                text = "Test renders the example text notification; Position cycles the corner; " +
-                    "Video loading cycles what built-in video templates show while loading."
+                text = "Test shows an example; Position cycles the corner; Video loading cycles its loader."
                 setPadding(0, Ui.dp(this@MainActivity, 6f), 0, 0)
             },
         )
@@ -354,6 +349,7 @@ class MainActivity : Activity() {
         val exempt =
             (getSystemService(POWER_SERVICE) as PowerManager).isIgnoringBatteryOptimizations(packageName)
         val overridden = Prefs.notificationTemplate(this) != null
+        val autostart = Prefs.autostart(this)
         val sb = SpannableStringBuilder()
         Ui.statusLine(
             sb,
@@ -375,6 +371,13 @@ class MainActivity : Activity() {
             "Battery",
             if (exempt) "optimization off" else "optimization on",
             if (exempt) Ui.OK else Ui.WARN,
+        )
+        Ui.statusLine(
+            sb,
+            if (autostart) Ui.OK else Ui.MUTED,
+            "Autostart",
+            if (autostart) "on boot" else "off",
+            if (autostart) Ui.OK else Ui.MUTED,
         )
         Ui.statusLine(
             sb,
