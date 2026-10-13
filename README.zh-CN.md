@@ -152,8 +152,9 @@ curl -X POST --data-binary @page.html "http://TV_IP:8080/overlay?base=http://192
 | `src` | — | `template=video` 的流名，或 `mp4` 经由 go2rtc 时的流名（如 `camera.aqara_g4_720p`) |
 | `url` | — | `template=mp4`：直链 http(s) MP4 地址（优先于 `src`/`base`；不能含空格/引号） |
 | `muted` | `false` | 视频模板的声音。`false` 会盖过电视当前的声音播放流音频（默认 —— 门铃摄像头通知的意义所在）；`true` 静默启动，适合长期挂着的摄像头监视窗或多图层抢扬声器的场景。文字模板忽略此参数 |
-| `position` | 应用设置 | `top-right` \| `bottom-right` \| `bottom-left` \| `top-left`；覆盖已配置的角落。框距屏幕边缘 `2%` |
-| `width`, `height` | `40`, `22`（`video`/`mp4` 为 `22`, `22`） | 窗口尺寸，占屏幕百分比（`1..96`，可带小数，结尾 `%` 可省）；角落边距保持 `2%`。对 `video`/`mp4`，默认 `22`/`22` 在 16:9 电视上恰为 16:9 —— 想放大请等量调大两个值（如 `width=30&height=30` 或 `width=40&height=40`）以保持比例 |
+| `position` | 应用设置 | `top-right` \| `bottom-right` \| `bottom-left` \| `top-left`；覆盖已配置的角落。框距屏幕边缘 `margin%` |
+| `margin` | `1` | 角落窗口与屏幕边缘的间距（`0..96`，可带小数，结尾 `%` 可省）；`margin + width` 与 `margin + height` 均需 `<= 100` |
+| `width`, `height` | `40`, `22`（`video`/`mp4` 为 `22`, `22`） | 窗口尺寸，占屏幕百分比（`1..96`，可带小数，结尾 `%` 可省）；角落边距由 `margin` 设定。对 `video`/`mp4`，默认 `22`/`22` 在 16:9 电视上恰为 16:9 —— 想放大请等量调大两个值（如 `width=30&height=30` 或 `width=40&height=40`）以保持比例 |
 | `duration` | `5` | N 秒后自动隐藏（`0` = 常驻） |
 | `anim` | `auto` | 入场/退场：`auto` \| `slide` \| `fade` \| `none` —— 通知默认从最近边缘滑入 |
 | `loading` | 应用设置（`spinner`） | 流的首帧仍在缓冲时视频框的行为（持久化默认值；用应用的 *Video loading* 按钮循环切换）。`spinner` = 框立即出现并带加载转圈，视频就绪后替换它；`hide` = 首帧之前屏幕上什么都不出现，然后带着实时画面淡入 —— 适合根本不想展示坏掉/加载中摄像头的场景；`native` = 原样展示浏览器播放器，大播放按钮一应俱全。`spinner`/`hide` 模式下流报错时仍会显示框并带错误信息，故障绝不会无声无息 |

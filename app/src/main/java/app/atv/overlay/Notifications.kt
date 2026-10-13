@@ -63,7 +63,7 @@ object Notifications {
     private const val HEIGHT_PCT = 22.0
     private const val VIDEO_WIDTH_PCT = 22.0
     private const val VIDEO_HEIGHT_PCT = 22.0
-    private const val MARGIN_PCT = 2.0
+    private const val MARGIN_PCT = 1.0
 
     const val EXAMPLE_TITLE = "atv_overlay: test notification"
     const val EXAMPLE_MESSAGE =
@@ -299,6 +299,10 @@ object Notifications {
         }
         val width = percent(q("width"), if (kind != "text") VIDEO_WIDTH_PCT else WIDTH_PCT, "width")
         val height = percent(q("height"), if (kind != "text") VIDEO_HEIGHT_PCT else HEIGHT_PCT, "height")
+        val margin = percent(q("margin"), MARGIN_PCT, "margin", min = 0.0)
+        if (margin + width > 100 || margin + height > 100) {
+            throw HttpException(400, "margin + width and margin + height must each be <= 100 percent")
+        }
         val html = when {
             body.isNotBlank() -> body
             kind == "video" -> DEFAULT_VIDEO_TEMPLATE
@@ -319,7 +323,7 @@ object Notifications {
         return Prepared(
             id,
             render(html, title, message),
-            specFor(position, width, height, anim.takeIf { it != "auto" }),
+            specFor(position, width, height, margin, anim.takeIf { it != "auto" }),
             duration,
             position,
             kind,
@@ -338,10 +342,11 @@ object Notifications {
         position: String,
         widthPct: Double = WIDTH_PCT,
         heightPct: Double = HEIGHT_PCT,
+        marginPct: Double = MARGIN_PCT,
         anim: String? = null,
     ): OverlayHub.Spec {
-        val x = if (position.endsWith("right")) 100.0 - widthPct - MARGIN_PCT else MARGIN_PCT
-        val y = if (position.startsWith("bottom")) 100.0 - heightPct - MARGIN_PCT else MARGIN_PCT
+        val x = if (position.endsWith("right")) 100.0 - widthPct - marginPct else marginPct
+        val y = if (position.startsWith("bottom")) 100.0 - heightPct - marginPct else marginPct
         return OverlayHub.Spec(
             x = pct(x),
             y = pct(y),
@@ -352,11 +357,11 @@ object Notifications {
         )
     }
 
-    fun percent(raw: String?, dflt: Double, name: String): Double {
+    fun percent(raw: String?, dflt: Double, name: String, min: Double = 1.0): Double {
         if (raw == null) return dflt
         val v = raw.trim().removeSuffix("%").toDoubleOrNull()
             ?: throw HttpException(400, "$name must be a percentage, e.g. width=40 or width=40%")
-        if (v < 1 || v > 96) throw HttpException(400, "$name must be 1..96 percent")
+        if (v < min || v > 96) throw HttpException(400, "$name must be $min..96 percent")
         return v
     }
 

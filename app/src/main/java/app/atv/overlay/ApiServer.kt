@@ -219,7 +219,7 @@ class ApiServer(
         .putRaw(
             "endpoints",
             Json.Obj()
-                .put("POST /notify?title&message&id&position&width&height&duration&base&template&src&url&muted&anim&loading", "show a notification (template=text|video|mp4; mp4 accepts url=; anim=auto|none|fade|slide; loading=spinner|hide|native for video templates; raw HTML body overrides)")
+                .put("POST /notify?title&message&id&position&width&height&margin&duration&base&template&src&url&muted&anim&loading", "show a notification (template=text|video|mp4; mp4 accepts url=; anim=auto|none|fade|slide; loading=spinner|hide|native for video templates; raw HTML body overrides)")
                 .put("GET /template", "current notification template (text/html, X-Template-Source header)")
                 .put("POST /template", "replace the default notification template with the raw HTML body")
                 .put("DELETE /template", "reset the notification template to the embedded default")
