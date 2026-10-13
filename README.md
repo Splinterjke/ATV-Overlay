@@ -1,7 +1,9 @@
+[English](README.md) · [Русский](README.ru.md) · [中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 # ATV Overlay
 
-A tiny Android / Android-TV app for **dev use on a trusted LAN**: it runs an HTTP
-server, and whatever HTML you `POST` to it is rendered into transparent
+A tiny Android / Android-TV app: it runs an HTTP server, and whatever HTML
+you `POST` to it is rendered into transparent
 `WebView` overlay windows that float **above every other app** — HTML5 video,
 live camera feeds and dashboards included. Typical triggers: Home Assistant
 automations, CI pipelines, scripts, `curl`.
@@ -17,9 +19,6 @@ automations, CI pipelines, scripts, `curl`.
 | Donation card | Catalog banner |
 |---|---|
 | ![Donation card](screenshots/notify_custom_donation.gif) | ![Catalog banner](screenshots/notify_custom_movies.gif) |
-
-Both cards are hand-written HTML/CSS posted as the body of `POST /notify`
-with `?position=`/`?width=`/`?height=` - no app code involved.
 
 Zero premade graphics and no ExoPlayer: **all graphics are HTML/CSS/JS you
 send at runtime or just use embedded one.**
@@ -192,7 +191,7 @@ values win over the query string:
 
 ```bash
 curl -H 'Content-Type: application/json' \
-  -d '{"title":"Камера","message":"Движение обнаружено","duration":10}' \
+  -d '{"title":"Camera","message":"Motion detected","duration":10}' \
   "http://TV_IP:8080/notify"
 curl -H 'Content-Type: application/json' \
   -d '{"title":"Camera","template":"video","src":"cam720","base":"http://MEDIA_IP:1984/"}' \

@@ -405,7 +405,7 @@ class MainActivity : Activity() {
         hintView?.text = """
             |B=http://TV_IP:$port
             |text     curl -X POST "${'$'}B/notify?title=hi&message=yo"
-            |json     curl -d '{"title":"Привет","duration":10}' ${'$'}B/notify
+            |json     curl -d '{"title":"Hello","duration":10}' ${'$'}B/notify
             |video    curl -X POST "${'$'}B/notify?template=video&src=cam&base=http://M:1984/"
             |mp4      curl -X POST "${'$'}B/notify?template=mp4&url=http://M:8123/clip.mp4"
             |corner   curl -X POST "${'$'}B/notify?title=hi&position=bottom-left&duration=10"
