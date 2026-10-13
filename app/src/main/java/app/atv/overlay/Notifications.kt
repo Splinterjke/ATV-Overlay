@@ -71,14 +71,15 @@ object Notifications {
             "and this slightly longer message word-wrap inside the rounded rectangle."
 
     const val DEFAULT_TEXT_TEMPLATE = """<!doctype html>
-<html>
+<html class="pos-{{POSITION}}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   html, body { margin: 0; padding: 0; height: 100%; background: transparent;
                overflow: hidden; font-family: sans-serif; }
-  .wrap { height: 100%; display: flex; align-items: center; }
+  .wrap { height: 100%; display: flex; align-items: flex-start; }
+  html.pos-bottom-right .wrap, html.pos-bottom-left .wrap { align-items: flex-end; }
   .note {
     box-sizing: border-box; flex: 1 1 auto; max-height: 100%;
     display: flex; flex-direction: row; align-items: center;
@@ -316,6 +317,7 @@ object Notifications {
             .replace("{{SRC}}", src.orEmpty())
             .replace("{{MUTED}}", if (muted) " muted" else "")
             .replace("{{LOADING}}", loading)
+            .replace("{{POSITION}}", position)
         val anim = (q("anim") ?: "auto").trim().lowercase()
         if (anim !in ANIM_MODES) {
             throw HttpException(400, "anim must be one of ${ANIM_MODES.joinToString("|")}")
